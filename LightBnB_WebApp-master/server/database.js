@@ -20,16 +20,16 @@ const getUserWithEmail = function(email) {
   (`
     SELECT * 
     FROM users
-    WHERE email = $1
+    WHERE email = $1;
   `)
   return pool.query(querryString, [email])
     .then(res => {
       return res.rows[0]
     })
     .catch (err => {
-      console.log('Error', err)
-    })
-}
+      console.log('Error:', err)
+    });
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**
@@ -49,9 +49,9 @@ const getUserWithId = function(id) {
       return res.rows[0]
     })
     .catch (err => {
-      console.log('Error', err)
-    })
-}
+      console.log('Error:', err)
+    });
+};
 
 exports.getUserWithId = getUserWithId;
 
@@ -62,11 +62,20 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
-  const userId = Object.keys(users).length + 1;
-  user.id = userId;
-  users[userId] = user;
-  return Promise.resolve(user);
-}
+  const querryString = 
+  (`
+  INSERT INTO users (name, email, password)
+  VALUES ($1, $2, $3);
+  `)
+
+  return pool.query(querryString, [user.name, user.email, user.password])
+    .then (res => {
+      return res.rows[0];
+    })
+    .catch(err => {
+      console.log('Error:', err)
+    });
+};
 exports.addUser = addUser;
 
 /// Reservations
